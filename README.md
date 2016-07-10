@@ -4,6 +4,8 @@ The objective of this project is to optimize Cameron Pittman's Portfolio website
 ##Repository Contents
 The main branch of this repo contains a "source code" directory named src, which contains files that include all the changes made to optimize the website's performance.  The html, css, and js files in src are not minified, so that commentary, etc., can be seen.  A "production code" directory, named dist contains the same code as src, but with html, css, and js files minified.
 
+To run the project locally using the src code, download the src folder, and run index.html in a browser, and to run the project using the dist code, do the same using the dist folder.  To directly run the pizzeria section, run views/pizza.html in a browser.  To run in a local server, open a terminal window or a windows PowerShell window, navigate to the appropriate directory, and run Python SimpleHTTPServer.  Open a second terminal window, navigate to the appropriate directory, and use ngrok to provide a local website that can be run in a browser.
+
 The gh-pages branch contains only the dist code files, so the optimized website may be viewed by browsing http://randyhoffner.github.io/FEND-Proj-4.
 
 ##Task 1 -- Optimize Page Loading Speed
@@ -17,27 +19,33 @@ The raw code as forked from the Udacity github repo was loaded onto one of my ow
   * Async js/perfmatters.js
   * Minifiy all html, css, and js files
 
-  After the above optimizations and file minifications were peformed, PageSpeed scores were raised to 95 on Mobile and 95 on Desktop.
+  After the above optimizations and file minifications were peformed, PageSpeed scores were raised to above 90 on both Mobile and Desktop, when run in a local server or on my website.
   
   
 ##Task 2 -- Remove Jank from Cam's Pizzeria Section
-The raw code was run in a local server using Python SimpleHTTPServer and NGROK, producing a web address on the local host from which the pizzeria could be run in a browser.  Chrome Canary Dev Tools were then used to observe the presence of long frames.  The following changes were made to views/js/main.js and css/style.css:
-  * Line 551 - Number of sliding pizzas was reduced from 200 to 40, as 40 fills all sizes of screen.
-  * Line 07 - Replace var items = document.query.SelectorAll('.mover'); with var items = document.getElementsByClassName('mover'); which is a more efficient way to access the DOM.   
-  * Line 516 - Using the raw code, layout gets retriggered on each scroll.  It is more efficient to use CSS3 hardware acceleration and transformations, so that only the pixels that actually change as the pizzas slide are retriggered, reducing layout and paint time and avoiding layout thashing.
-      * Add transform: translateZ(0);, transform: translateX(); for webkit, moz, ms, and o to the mover class in css/stsyles.css
-      * Line 526 - Replace items[i].style.left = items[i].basicLeft + 100 * phase + 'px'; with:
-      var left = -iems[i].basicLeft + 1000 * phase + 'px';
-        items [i].style.transform = "translateX("+left+") translaeZ(0)";
-  * Add backface-visibility: hidden; to mover class of css/style.css. This forces each sliding pizza into its own layer, moving a lot of processing from  the CPU to the GPU.
+The raw code was run in a local server using Python SimpleHTTPServer and NGROK, producing a web address on the local host from which the pizzeria could be run in a browser.  Chrome Canary Dev Tools were then used to observe the presence of long frames.  The following changes were made to views/js/main.js and views/css/style.css:
+    * Line 456 - function changePizzaSizes(size) was changed:
+  		* Replace var items = document.query.SelectorAll('.mover'); with var items = document.getElementsByClassName('mover'); which is a more efficient way to access the DOM.
+  		* Move variables i, dx, and newWidth so that they are outside the for-loop.   
+  * Line 519 - Using the original code, layout gets retriggered on each scroll.  It is more efficient to use CSS3 hardware acceleration and transformations, so that only the pixels that actually change as the pizzas slide are retriggered, reducing layout and paint time and avoiding layout thashing.
+      * Add transform: translateZ(0);, transform: translateX(); for webkit, moz, ms, and o to the mover class in views/css/styles.css
+  * Line 538 - Replace items[i].style.left = items[i].basicLeft + 100 * phase + 'px'; with:
+      var left = -items[i].basicLeft + 1200 * phase + 'px';
+        items [i].style.transform = "translateX("+left+") translateZ(0)";
+  * Add backface-visibility: hidden; to mover class of views/css/style.css. This forces each sliding pizza into its own layer, moving a lot of processing from  the CPU to the GPU.
   * Add will-change: transform; to the mover class of css/style.ss to inform the browser that this parameter will change.
+  * Line 566 - The following changes were made to this function:
+		* Columns and rows are calculated dynamically depending on the width and height of the viewport, generating the appropriate number of pizzas for any given viewport size.
+		* Change document.querySelector("#movingPizzas1") to the more efficient document.getElementsById("movingPizzas1)
+		* Move variable movingPizzas so that it is outside the for-loop.
+		* Set for-loop to interate over totalPizzas
   * Minify views/js/main.js, views/css/styles.css, views/css/bootstrap-grid.css and views/pizza.html.
 
-After the above optimizations were performed using the local server, the code was also tested on the public internet on randyhoffner.net, with similar results to those obtained on the local server.
+After the above optimizations were performed using the local server no long frames were typically obsefved.  The code was also tested on the public internet on randyhoffner.net, with similar results to those obtained on the local server.
 
 ##Task 3 -- Reduce Pizza Resize Time to Less Than 5ms
 The work on views/main.js was done using Chrome Canary Dev Tools with the site running on the local host.  Original time to resize pizza was about 130ms.
-  * Add will-change: transform; to randomPizzaContainer:after; class of css/style.css.  Lets the browser know this parameter will change.  This reduced resize time to about 60ms.
-  * Line 452 - Within the changePizzaSizes function, move the three variables: i, dx, and newWidth, so that they are outside the for-loop.  This reduced resize time to about 1.5ms.
+  * Add will-change: transform; to randomPizzaContainer:after; class of views/css/style.css.  This lets the browser know this parameter will change.  This reduced resize time to about 60ms.
+  * Line 452 - Within the changePizzaSizes function, move the three variables: i, dx, and newWidth, so that they are outside the for-loop.  This reduced resize time to typically less than 1ms.
 
-These changes were checked on the public internet, and resize time was slightly higher, but still  well below 2ms.
+These changes were checked on the public internet with similar results.
