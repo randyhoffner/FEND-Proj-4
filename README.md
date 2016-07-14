@@ -28,6 +28,8 @@ The raw code was run in a local server using Python SimpleHTTPServer and NGROK, 
    * Add transforms to mover class of css/styles.css.
    * Add backface-visibility: hidden; to mover class of views/css/style.css. This forces each sliding pizza into its own layer, moving a lot of processing from  the CPU to the GPU.
   * Add will-change: transform; to the mover class of css/style.ss to inform the browser that this parameter will change.
+  * Line 543 -Change DOM call document.querySelectorAll to the more efficient getElementsByClassName, and move this DOM call outside the for-loop.
+  * Line 544 - move DOM call (document.body.scrollTop / 1250) outide the for-loop.
   * Line 576 - The following changes were made to this function:
 		* Columns and rows are calculated dynamically depending on the width and height of the viewport, generating the appropriate number of pizzas for any given viewport size.  Variable "totalPizzas" replaces "200"
 		* Change document.querySelector("#movingPizzas1") to the more efficient document.getElementsById("movingPizzas1"), and move this DOM call outside the for-loop.
