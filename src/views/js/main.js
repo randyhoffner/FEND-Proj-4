@@ -538,12 +538,13 @@ function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
-    //document.getElementsByClassName(); is a more efficient way to access the DOM than getElementsByClassName//
+    //document.getElementsByClassName(); is a more efficient way to access the DOM than getElementsByClassName
+    //move DOM call (document.body.scrollTop / 1250) outside the for-loop
   var items = document.getElementsByClassName('mover');
-  
+  var scrollPos = (document.body.scrollTop / 1250);
   for (var i = 0; i < items.length; i++) {
   	
-    var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
+    var phase = Math.sin((scrollPos) + (i % 5));
        
     
     items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
