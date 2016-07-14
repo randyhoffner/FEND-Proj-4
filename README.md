@@ -24,9 +24,9 @@ The raw code as forked from the Udacity github repo was loaded onto one of my ow
   
 ##Task 2 -- Remove Jank from Cam's Pizzeria Section
 The raw code was run in a local server using Python SimpleHTTPServer and NGROK, producing a web address on the local host from which the pizzeria could be run in a browser.  Chrome Canary Dev Tools were then used to observe the presence of long frames.  The following changes were made to views/js/main.js and views/css/style.css:
-    * Line 477 - Simplified the for-loop, removing determineDx, which was a source of layout retriggering.
-    * Add transforms to css/styles.css.
-     * Add backface-visibility: hidden; to mover class of views/css/style.css. This forces each sliding pizza into its own layer, moving a lot of processing from  the CPU to the GPU.
+   * Line 477 - Simplified the for-loop, removing determineDx, which was a source of layout retriggering.
+   * Add transforms to mover class of css/styles.css.
+   * Add backface-visibility: hidden; to mover class of views/css/style.css. This forces each sliding pizza into its own layer, moving a lot of processing from  the CPU to the GPU.
   * Add will-change: transform; to the mover class of css/style.ss to inform the browser that this parameter will change.
   * Line 576 - The following changes were made to this function:
 		* Columns and rows are calculated dynamically depending on the width and height of the viewport, generating the appropriate number of pizzas for any given viewport size.  Variable "totalPizzas" replaces "200"
@@ -41,4 +41,5 @@ The work on views/main.js was done using Chrome Canary Dev Tools with the site r
   * Add will-change: transform; to randomPizzaContainer:after; class of views/css/style.css.  This lets the browser know this parameter will change.  This reduced resize time to about 60ms.
   * Line 456 - function changePizzaSizes(size) was changed to work with percentages.  
   * Line 475 - Change DOM call document.querySelectAll() to the more efficient document.getElementsByClassName("randomPizzaContainer") and cache the DOM call as a variable outside the for-loop, avoiding multiple DOM calls.
+
 Resize pizzas typically takes less than 1ms.  These changes were checked on the public internet with similar results.
