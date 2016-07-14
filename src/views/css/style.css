@@ -57,6 +57,7 @@ form {
 .randomPizzaContainer {
   float: left;
   display: flex;
+  
 }
 
 .randomPizzaContainer:after {

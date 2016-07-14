@@ -450,19 +450,42 @@ var resizePizzas = function(size) {
   // Iterates through pizza elements on the page and changes their widths
 
 
-  //Move variables i, dx, and newWidth outside the for-loop.
-  //Change querySelectorAll to the more efficient getElementsByClassName.  Requires that the 
-  //dot in front of class name be removed.
+  
+  //Change function changePizzaSizes to use percentages.  Remove determineDx and other
+  //compolications from for-loop to eliminate forced synchronous layout.
   function changePizzaSizes(size) {
+      switch(size) {
+        case "1":
+              newWidth = 25;
+              break;
+         case "2":
+              newWidth = 33.3
+              break;
+          case "3":
+              newWidth = 50;
+              break;
+          default:
+              console.log("bug in sizeSwitcher")
+      }
 
-      var i = 0;
-      var dx = determineDx(document.getElementsByClassName("randomPizzaContainer")[i], size);
-      var newwidth = (document.getElementsByClassName("randomPizzaContainer")[i].offsetWidth + dx) + 'px';
+    
+      
+     //Cache DOM call as a variable (pizzaContainer).   
+      
+      var pizzaContainer = document.getElementsByClassName("randomPizzaContainer");
 
-      for (var i; i < document.getElementsByClassName("randomPizzaContainer").length; i++) {
+      for (var i = 0; i < pizzaContainer.length; i++) {
+          pizzaContainer[i].style.width = newWidth + "%";
 
-      document.getElementsByClassName("randomPizzaContainer")[i].style.width = newwidth;
-      i++;
+      
+      //above simplified function replaces the for-loop  below
+      //for (var i = 0; i < pizzaContainer.length; i++) {
+        //var dx = determineDx(pizzaContainer[i], size); 
+        
+        //var newwidth = (pizzaContainer[i].offsetWidth + dx) + 'px';
+        
+        //pizzaContainer[i].style.width = newwidth;
+     
     }
     
   }
@@ -521,23 +544,10 @@ function updatePositions() {
   for (var i = 0; i < items.length; i++) {
   	
     var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
+       
     
-    
-
-    //Instead of using style.left, is there a more efficient way to change the position of this object?
-    //Layout gets retriggered on each scroll.  
-    // CSS3 has hardware acceleration and transformations that can reduce the need to trigger a relayout. CSS 'transform' property.
-    
-    //items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
-
-    //Use style.transform instead of style.left to avoid triggering layout and painting, thereby avoid forced synchronous
-    //reflow, aka layout thrashing.  Add transform:  translateZ(); and transform:  translateX(); to css/style.css  
-
-    
-    
-    var left = -items[i].basicLeft + 1200 * phase + 'px';
-	    items[i].style.transform = "translateX("+left+") translateZ(0)";
-    }
+    items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+        }
 
     //Add backface-visibilty: hidden to css/style.css.  This moves a lot of processing to GPU instead of CPU.
   
@@ -560,18 +570,18 @@ window.addEventListener('scroll', updatePositions);
 //Change document.querySelector("#movingPizzas1") to the more efficient document.getElementById('movingPizzas1').
 //Move document.getElementById('movingPizzas1') so that it is outside the for-loop.
 //Dynamically calculate number of rows and cols (pizzaRows and pizzaColumns) dependent
-//on viewport width and height dynamic, dependent on viewport height.  Thhis supplies adequate number of total pizzas for 
+//on viewport width and height.  This generates an adequate number of total pizzas for 
 //any size screen.
 
 document.addEventListener('DOMContentLoaded', function() {
-    //var cols = 8;
+    
     var s = 256;
     var pizzaColumns = Math.ceil(window.innerWidth / s);
     var pizzaRows = Math.ceil(window.innerHeight / s);
     var totalPizzas = pizzaColumns * pizzaRows;
-    var cols = pizzaColumns;
+        cols = pizzaColumns;
      
-  //Move variable movingPizzas outside the for-loop.
+  //Move variable movingPizzas to outside the for-loop.
   var movingPizzas = document.getElementById("movingPizzas1");
 
   //Set loop to iterate over totalPizzas = pizzaColumns * pizzaRows times.
